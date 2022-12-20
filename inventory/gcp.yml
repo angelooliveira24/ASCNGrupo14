@@ -20,5 +20,6 @@ all:
     # Database variables
     gcp_db_version: MYSQL_5_7
     instance_tier: db-n1-standard-1
+
     # Additional variables
     # ...

@@ -1,5 +1,5 @@
 ---
-- name: Create Cloud SQL instance
+- name: Destroy Cloud SQL instance
   gcp_sql_instance:
     name: mysql
     project: "{{ gcp_project }}"
@@ -9,4 +9,4 @@
     database_version: "{{ gcp_db_version }}"
     settings:
       tier: "{{ instance_tier }}"
-    state: present
+    state: absent
