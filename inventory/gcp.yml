@@ -6,7 +6,8 @@ all:
     gcp_auth_kind: serviceaccount # Do not change
     gcp_cred_file: ./ascn-365616-644f537b1710.json # Path to service account keys (json file downloaded from GCP)
 
-    gcp_zone: us-central1-a
+    gcp_zone: europe-west2-c
+    gcp_region: europe-west2
     gcp_image_type: ubuntu_containerd
     gcp_machine_type: e2-micro # Can be changed if necessary
     gcp_disk_size_gb: 10 # Can be changed if necessary
@@ -16,6 +17,8 @@ all:
     ghost_ip: <GHOST_SERVICE_IP> # Needs to be updated
     ghost_port: <GHOST_PORT> # Needs to be updated
 
-
+    # Database variables
+    gcp_db_version: MYSQL_5_7
+    instance_tier: db-n1-standard-1
     # Additional variables
     # ...

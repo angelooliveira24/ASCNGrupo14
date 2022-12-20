@@ -1,0 +1,12 @@
+---
+- name: Create Cloud SQL instnce
+  gcp_sql_instance:
+    name: mysql
+    project: "{{ gcp_project }}"
+    region: "{{ gcp_region }}"
+    service_account_file: "{{ gcp_cred_file }}"
+    auth_kind: "{{ gcp_auth_kind }}"
+    database_version: "{{ gcp_db_version }}"
+    settings:
+      tier: "{{ instance_tier }}"
+    state: present
