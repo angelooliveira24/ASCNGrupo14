@@ -1,0 +1,9 @@
+---
+# Playbook to test
+- name: Create teste
+  hosts: localhost
+  gather_facts: false
+  roles:
+    - gke_network_create
+    - gke_cluster_create
+    - gcp_mysql_create
