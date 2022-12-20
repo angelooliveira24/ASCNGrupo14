@@ -4,6 +4,6 @@
   hosts: localhost
   gather_facts: false
   roles:
-    - gke_network_create
-    - gke_cluster_create
-    - gcp_mysql_create
+    #- gke_cluster_create
+    #- gcp_mysql_create
+    #- gcp_mysql_destroy
