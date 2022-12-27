@@ -2,7 +2,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: ghost-deployment
+  name: ghost
   namespace: default
   labels:
     app: ghost
@@ -18,37 +18,52 @@ spec:
     metadata:
       labels:
         app: ghost
-        tier: app
     spec:
       containers:
         - name: ghost
           image: ghost:5.14.1
           imagePullPolicy: Always
+          ports:
+            - containerPort: 2368
           env: # The variables below could be set on a ConfigMap object
             - name: database__client
-              value: mysql
-            - name: database__connection__host
-              value: swap
-            - name: database__connection__user
-              value: swapuser
-            - name: database__connection__password
-              value: "123456"
-            - name: database__connection__database
-              value: "ghost"
-            - name: url #this is wrong
-              value: "http://localhost:8080"
+              value: sqlite3
+            - name: database__connection__filename
+              value: /var/lib/ghost/content/data/ghost.db
+            - name: url
+              value: http://localhost:2368
+          #   - name: database__connection__host
+          #     value: swap
+          #   - name: database__connection__user
+          #     value: swapuser
+          #   - name: database__connection__password
+          #     value: "123456"
+          #   - name: database__connection__database
+          #     value: "ghost"
+          #   - name: url #this is wrong
+          #     value: "http://localhost:8080"
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: ghost-entrypoint
+  name: ghost
   namespace: default
 spec:
   type: NodePort
   selector:
-    matchLabels:
-      app: ghost
+    run: ghost
   ports:
-    - port: "{{ ghost_port }}"
-      targetPort: 3000
-      nodePort: 30007
+    - port: 8080
+      protocol: TCP
+      targetPort: 2368
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ghost
+spec:
+  defaultBackend:
+    service:
+      name: ghost
+      port:
+        number: 8080
