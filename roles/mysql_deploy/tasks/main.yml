@@ -1,0 +1,83 @@
+---
+- name: Create MySQL
+  kubernetes.core.k8s:
+    state: present
+    definition:
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: mysql-deployment
+        namespace: default
+        labels:
+          app: mysql
+          tier: database
+      spec:
+        selector:
+          matchLabels:
+            app: mysql
+        strategy:
+          type: Recreate
+        template:
+          metadata:
+            labels:
+              app: mysql
+              tier: database
+          spec:
+            containers:
+              - name: mysql
+                image: mysql:latest
+                env: # The variables below could be set on a ConfigMap object
+                  - name: MYSQL_ALLOW_EMPTY_PASSWORD
+                    value: "true"
+                  - name: MYSQL_DATABASE
+                    value: "{{ mysql_db }}"
+                  - name: MYSQL_USER
+                    value: "{{ mysql_user }}"
+                  - name: MYSQL_PASSWORD
+                    value: "{{ mysql_password }}" # Use Secret object in real usage
+                ports:
+                  - containerPort: "{{ mysql_port }}"
+                volumeMounts:
+                  - name: mysql-persistent-storage
+                    mountPath: /var/lib/mysql
+            volumes:
+              - name: mysql-persistent-storage
+                persistentVolumeClaim:
+                  claimName: mysql-pv-claim
+
+- name: Cretae MySQL PVC
+  kubernetes.core.k8s:
+    state: present
+    definition:
+      apiVersion: v1
+      kind: PersistentVolumeClaim
+      metadata:
+        name: mysql-pv-claim
+        namespace: default
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        storageClassName: standard
+        resources:
+          requests:
+            storage: 20Gi
+
+- name: Create Mysql Service
+  kubernetes.core.k8s:
+    state: present
+    definition:
+      apiVersion: v1
+      kind: Service
+      metadata:
+        name: mysql-service # logical name of the service, which will also become the DNS name of the service when it is created.
+        namespace: default
+        labels:
+          app: mysql
+          tier: database
+      spec:
+        type: ClusterIP
+        selector:
+          app: mysql
+        ports:
+          - targetPort: "{{ mysql_port }}" # port that containers are listening on
+            port: "{{ mysql_port }}" # port number exposed internally in the cluster
