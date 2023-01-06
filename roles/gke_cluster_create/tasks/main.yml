@@ -18,7 +18,7 @@
   retries: 3
 
 - name: Verify that the cluster was created
-  shell: gcloud container clusters describe  --project="{{ gcp_project}}"  --zone="{{ gcp_zone }}"  ascn-cluster
+  shell: gcloud container clusters describe  --project="{{ gcp_project }}"  --zone="{{ gcp_zone }}"  ascn-cluster
   register: results
 
 - name: Verify that the command succeeded
@@ -42,4 +42,4 @@
     state: present
 
 - name: Connect to the cluster (update kubeconfig)"
-  shell: gcloud container clusters get-credentials  --project="{{ gcp_project}}"  --zone="{{ gcp_zone }}"  ascn-cluster
+  shell: gcloud container clusters get-credentials  --project="{{ gcp_project }}"  --zone="{{ gcp_zone }}"  ascn-cluster

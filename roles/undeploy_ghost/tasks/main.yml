@@ -1,0 +1,8 @@
+---
+- name: Delete ghost Deployment
+  shell: kubectl delete deployment ghost-app
+# - name: Delete ghost ClusterIP
+#   shell: kubectl delete service ghost-svc
+
+# - name: Delete ghost Ingress
+#   shell: kubectl delete ingress ghost-ing
