@@ -60,6 +60,8 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: ghost-ing
+  annotations:
+    kubernetes.io/ingress.global-static-ip-name: "ghost-ip"
 spec:
   defaultBackend:
     service:

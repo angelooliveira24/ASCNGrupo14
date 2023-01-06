@@ -13,8 +13,8 @@ all:
     gcp_initial_node_count: 2 # Number of nodes to create. Can be changed if necessary
 
     # APP variables
-    ghost_ip: <GHOST_SERVICE_IP> # Needs to be updated
-    ghost_port: 8000 # Needs to be updated
+    ghost_ip: 35.190.37.136 # Needs to be updated
+    ghost_port: 80 # Needs to be updated
 
 
     # Additional variables

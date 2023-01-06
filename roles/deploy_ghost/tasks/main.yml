@@ -1,3 +1,5 @@
 ---
+# - name: Create ghost ip address
+#   shell: gcloud compute addresses create ghost-ip --global
 - name: Deploy ghost
   shell: kubectl apply -f ./create-ghost-deployment.yml
