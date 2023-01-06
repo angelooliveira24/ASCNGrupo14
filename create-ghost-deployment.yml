@@ -2,29 +2,25 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: ghost
-  namespace: default
   labels:
-    app: ghost
-    tier: app
+    run: ghost-app # Label for the Deployment
+  name: ghost-app # Name of Deployment
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: ghost
-  strategy:
-    type: Recreate
-  template:
+      run: ghost-app
+  template: # Pod template
     metadata:
       labels:
-        app: ghost
+        run: ghost-app # Labels Pods from this Deployment
     spec:
       containers:
         - name: ghost
           image: ghost:5.14.1
-          imagePullPolicy: Always
           ports:
             - containerPort: 2368
+              protocol: TCP
           env: # The variables below could be set on a ConfigMap object
             - name: database__client
               value: sqlite3
@@ -46,24 +42,27 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: ghost
+  name: ghost-svc # Name of Service
   namespace: default
-spec:
-  type: NodePort
+  annotations:
+    cloud.google.com/neg: '{"ingress": true}' # Creates a NEG after an Ingress is created
+spec: # Service's specification
+  type: ClusterIP
   selector:
-    run: ghost
+    run: ghost-app # Selects Pods labelled run: ghost-app
   ports:
-    - port: 8080
+    - name: http
+      port: 80 # Service's port
       protocol: TCP
       targetPort: 2368
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: ghost
+  name: ghost-ing
 spec:
   defaultBackend:
     service:
-      name: ghost
+      name: ghost-svc # Name of the Service targeted by the Ingress
       port:
-        number: 8080
+        number: 80
