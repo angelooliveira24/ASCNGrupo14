@@ -81,16 +81,3 @@
         ports:
           - targetPort: "{{ mysql_port }}"
             port: "{{ mysql_port }}"
-
-#TODO - check if mysql is deployed
-- name: Check if mysql is created
-  shell: sleep 10
-
-- name: Get MySQL Pod Name
-  shell: kubectl get pods -l tier=database |awk '{ print $1}' | grep -v NAME
-  register: mpod
-
-- name: Insert Admin
-  shell: kubectl exec -it {{mpod.stdout}}   -- bash -c "mysql -u "{{ mysql_user }}" -p"{{ mysql_password }}" "{{ mysql_db }}" -e \"update users set name='ascn', password='\\\$2b\\\$10\\\$i9.f1DUYmJb\\\/jqWKxNRPUOcYBNB7Gc.1tzEBo2Y6ZSOX0Ce3Oa5gK', email='ascn@example.com', status='active' where id=1;\""
-
-

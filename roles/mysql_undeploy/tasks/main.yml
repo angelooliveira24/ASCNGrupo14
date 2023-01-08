@@ -1,3 +1,16 @@
 ---
-- name: Delete pvc
-  shell: kubectl delete pvc mysql-pv-claim
+- name: Get MySQL Pod Name
+  shell: kubectl get pods -l tier=database |awk '{ print $1}' | grep -v NAME
+  register: mpod
+
+- name: Delete Mysql Pod
+  kubernetes.core.k8s:
+    api_version: v1
+    kind: Pod
+    name: "{{ mpod.stdout }}"
+    namespace: default
+    state: absent
+
+- name: Delete all PVC
+  shell: kubectl get pvc -o name | grep "mysql" | xargs -n 1 kubectl delete;
+#Todo -  check why does not work
