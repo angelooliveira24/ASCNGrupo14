@@ -22,20 +22,20 @@ spec:
             - containerPort: 2368
               protocol: TCP
           env: # The variables below could be set on a ConfigMap object
-            - name: database__client
-              value: sqlite3
-            - name: database__connection__filename
-              value: /var/lib/ghost/content/data/ghost.db
-            - name: url
-              value: http://localhost:2368
-          #   - name: database__connection__host
-          #     value: swap
-          #   - name: database__connection__user
-          #     value: swapuser
-          #   - name: database__connection__password
-          #     value: "123456"
-          #   - name: database__connection__database
-          #     value: "ghost"
+          #  - name: database__client
+          #   value: sqlite3
+          # - name: database__connection__filename
+          #   value: /var/lib/ghost/content/data/ghost.db
+           # - name: url
+            #  value: http://localhost:2368
+             - name: database__connection__host
+               value: mysql-service
+             - name: database__connection__user
+               value: ghost
+             - name: database__connection__password
+               value: "ghost"
+             - name: database__connection__database
+               value: "ghost"
           #   - name: url #this is wrong
           #     value: "http://localhost:8080"
 ---

@@ -3,8 +3,5 @@
 - name: Undeploy Ghost
   hosts: localhost
   roles:
-    - {
-        role: undeploy_mysql,
-        when: "delete_data is defined and delete_data == 'true'",
-      }
     - undeploy_ghost
+    - {role: mysql_undeploy, when: "delete_data is defined and delete_data == 'true'"}

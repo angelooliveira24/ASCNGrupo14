@@ -21,7 +21,7 @@ all:
     mysql_user: ghost
     mysql_password: ghost
     mysql_port: 3306
-    mysql-service: mysql-service
+    mysql_service: mysql-service
 
     # Additional variables
     # ...
