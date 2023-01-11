@@ -2,7 +2,100 @@
 # - name: Create ghost ip address
 #   shell: gcloud compute addresses create ghost-ip --global
 - name: Deploy ghost
-  shell: kubectl apply -f ./create-ghost-deployment.yml
+  kubernetes.core.k8s:
+    state: present
+    definition:
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        namespace: default
+        labels:
+          run: ghost-app # Label for the Deployment
+        name: ghost-app # Name of Deployment
+      spec:
+        replicas: 1
+        selector:
+          matchLabels:
+            run: ghost-app
+        template: # Pod template
+          metadata:
+            labels:
+              run: ghost-app # Labels Pods from this Deployment
+          spec:
+            containers:
+              - name: ghost
+                image: ghost:5.14.1
+                ports:
+                  - containerPort: 2368
+                    protocol: TCP
+                env: # The variables below could be set on a ConfigMap object
+                  - name: database__connection__host
+                    value: "{{ mysql_service }}"
+                  - name: database__connection__user
+                    value: "{{ mysql_user }}"
+                  - name: database__connection__password
+                    value: "{{ mysql_password }}"
+                  - name: database__connection__database
+                    value: "{{ mysql_db }}"
+                  - name: url
+                    value: "http://{{ ghost_ip }}"
+
+- name: Deploy clusterIP
+  kubernetes.core.k8s:
+    state: present
+    definition:
+      apiVersion: v1
+      kind: Service
+      metadata:
+        name: ghost-svc # Name of Service
+        namespace: default
+        annotations:
+          cloud.google.com/neg: '{"ingress": true}' # Creates a NEG after an Ingress is created
+      spec: # Service's specification
+        type: ClusterIP
+        selector:
+          run: ghost-app # Selects Pods labelled run: ghost-app
+        ports:
+          - name: http
+            port: 80 # Service's port
+            protocol: TCP
+            targetPort: 2368
+
+- name: Deploy ingress
+  kubernetes.core.k8s:
+    state: present
+    definition:
+      apiVersion: networking.k8s.io/v1
+      kind: Ingress
+      metadata:
+        name: ghost-ing
+        namespace: default
+        annotations:
+          kubernetes.io/ingress.global-static-ip-name: "ghost-ip"
+      spec:
+        defaultBackend:
+          service:
+            name: ghost-svc # Name of the Service targeted by the Ingress
+            port:
+              number: 80
+
+- name: Autoscale ghost
+  kubernetes.core.k8s:
+    state: present
+    definition:
+      apiVersion: autoscaling/v1
+      kind: HorizontalPodAutoscaler
+      metadata:
+        namespace: default
+        name: ghost-app
+      spec:
+        scaleTargetRef:
+          apiVersion: apps/v1
+          kind: Deployment
+          name: ghost-app
+        minReplicas: "{{ minReplicas }}"
+        maxReplicas: "{{ maxReplicas }}"
+        targetCPUUtilizationPercentage: "{{ targetCPUUtilizationPercentage }}"
 
 - name: sleep
   shell: sleep 10
@@ -13,5 +106,3 @@
 
 - name: Insert Admin
   shell: kubectl exec -it {{mpod.stdout}} -- bash -c "mysql -u "{{ mysql_user }}" -p"{{ mysql_password }}" "{{ mysql_db }}" -e \"update users set name='ascn', password='\\\$2b\\\$10\\\$i9.f1DUYmJb\\\/jqWKxNRPUOcYBNB7Gc.1tzEBo2Y6ZSOX0Ce3Oa5gK', email='ascn@example.com', status='active' where id=1;\""
-
-

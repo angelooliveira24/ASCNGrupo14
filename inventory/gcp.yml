@@ -24,4 +24,6 @@ all:
     mysql_service: mysql-service
 
     # Additional variables
-    # ...
+    minReplicas: 3
+    maxReplicas: 6
+    targetCPUUtilizationPercentage: 60

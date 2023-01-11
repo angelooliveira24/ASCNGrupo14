@@ -1,4 +1,8 @@
 ---
+- name: install pre-requisites
+  pip:
+    name:
+      - kubernetes
 - name: Create MySQL
   kubernetes.core.k8s:
     state: present
