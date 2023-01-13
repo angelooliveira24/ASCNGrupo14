@@ -18,8 +18,6 @@ all:
 
     #Database variables
     mysql_db: ghost
-    mysql_user: ghost
-    mysql_password: ghost
     mysql_port: 3306
     mysql_service: mysql-service
     mysql_pv_claim: mysql-pv-claim
