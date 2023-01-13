@@ -1,16 +1,9 @@
 ---
-- name: Get MySQL Pod Name
-  shell: kubectl get pods -l tier=database |awk '{ print $1}' | grep -v NAME
-  register: mpod
+- name: Delete MYSQL
+  shell: kubectl delete deployment mysql
 
-- name: Delete Mysql Pod
-  kubernetes.core.k8s:
-    api_version: v1
-    kind: Pod
-    name: "{{ mpod.stdout }}"
-    namespace: default
-    state: absent
+- name: Delete MYSQL Service
+  shell: kubectl delete svc "{{mysql_service}}"
 
-- name: Delete all PVC
-  shell: kubectl get pvc -o name | grep "mysql" | xargs -n 1 kubectl delete;
-#Todo -  check why does not work
+#- name: Delete MYSQL PVC
+ # shell: kubectl delete pvc "{{ mysql_pv_claim }}"

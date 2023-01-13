@@ -22,6 +22,7 @@ all:
     mysql_password: ghost
     mysql_port: 3306
     mysql_service: mysql-service
+    mysql_pv_claim: mysql-pv-claim
 
     # Additional variables
     minReplicas: 3

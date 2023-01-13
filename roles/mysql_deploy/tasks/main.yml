@@ -10,7 +10,7 @@
       apiVersion: apps/v1
       kind: Deployment
       metadata:
-        name: mysql-deployment
+        name: mysql
         namespace: default
         labels:
           app: mysql
@@ -47,7 +47,7 @@
             volumes:
               - name: mysql-persistent-storage
                 persistentVolumeClaim:
-                  claimName: mysql-pv-claim
+                  claimName: "{{ mysql_pv_claim }}"
 
 - name: Cretae MySQL PVC
   kubernetes.core.k8s:
@@ -56,7 +56,7 @@
       apiVersion: v1
       kind: PersistentVolumeClaim
       metadata:
-        name: mysql-pv-claim
+        name: "{{ mysql_pv_claim }}"
         namespace: default
       spec:
         accessModes:
