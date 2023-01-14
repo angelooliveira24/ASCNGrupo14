@@ -5,7 +5,8 @@
   hosts: localhost
   gather_facts: false
   vars_files:
-    - secrets.yml
+    - vault/secrets.yml
   roles:
     - mysql_deploy
     - deploy_ghost
+    - dashboard_deploy
