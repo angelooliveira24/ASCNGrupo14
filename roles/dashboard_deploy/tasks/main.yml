@@ -1,8 +1,5 @@
 ---
 # Playbook to deploy Monitorizacao Dashboards
 
-- name: Deploy Monitorizacao
-  hosts: localhost
-  tasks:
-    - name: Create GCP dashboard
-      shell: gcloud monitoring dashboards create --config-from-file=Custom_Dashboard.json
+- name: Create GCP dashboard
+  shell: gcloud monitoring dashboards create --config-from-file=Custom_Dashboard.json
