@@ -98,7 +98,7 @@
         targetCPUUtilizationPercentage: "{{ targetCPUUtilizationPercentage }}"
 
 - name: sleep
-  shell: sleep 10
+  shell: sleep 20
 
 - name: Get MySQL Pod Name
   shell: kubectl get pods -l tier=database |awk '{ print $1}' | grep -v NAME
@@ -115,4 +115,4 @@
   register: result
   until: result.status == 200
   retries: 3
-  delay: 300
+  delay: 220

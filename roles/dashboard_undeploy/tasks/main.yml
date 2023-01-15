@@ -1,7 +1,4 @@
 ---
 # Playbook to undeploy Monitorizacao Dashboards
-- name: Undeploy Monitorizacao
-  hosts: localhost
-  tasks:
-    - name: Delete GCP dashboard
-      shell: gcloud monitoring dashboards delete ascn-tp -q
+- name: Delete GCP dashboard
+  shell: gcloud monitoring dashboards delete ascn-tp -q
